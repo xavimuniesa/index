@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14110d">
+<title>Xavi · Andròmines</title>
+<style>
+:root{
+  --bg:#14110d; --bg2:#1d1812; --card:#241e16; --card2:#2d251b;
+  --gold:#d4a95a; --gold2:#f0d28f; --text:#f3ead9; --muted:#a39580; --line:rgba(212,169,90,.22);
+  --radius:18px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{
+  background:radial-gradient(1200px 600px at 80% -10%,#2c2214 0%,transparent 60%),
+             radial-gradient(900px 500px at -10% 10%,#221a10 0%,transparent 55%),var(--bg);
+  color:var(--text);font-family:Georgia,"Palatino Linotype",serif;min-height:100vh;
+  padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+}
+header{padding:38px 22px 8px;max-width:1200px;margin:0 auto;text-align:center}
+header h1{margin:0;font-size:clamp(1.8rem,5vw,3rem);font-weight:400;letter-spacing:.12em;text-transform:uppercase;
+  background:linear-gradient(180deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+header p{margin:8px 0 0;color:var(--muted);font-style:italic}
+.tools{max-width:1200px;margin:22px auto 6px;padding:0 22px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.tools input{flex:1 1 240px;max-width:420px;background:var(--bg2);border:1px solid var(--line);color:var(--text);
+  padding:12px 16px;border-radius:999px;font:inherit;font-size:1rem;outline:none}
+.tools input:focus{border-color:var(--gold)}
+.tools button{background:var(--bg2);border:1px solid var(--line);color:var(--gold2);padding:12px 18px;border-radius:999px;
+  font:inherit;cursor:pointer}
+.tools button:hover{border-color:var(--gold)}
+main{max-width:1200px;margin:0 auto;padding:10px 0 60px}
+section{margin-top:26px}
+.sec-head{display:flex;align-items:center;justify-content:space-between;padding:0 22px;margin-bottom:10px}
+.sec-head h2{margin:0;font-size:1.15rem;font-weight:400;letter-spacing:.08em;text-transform:uppercase;color:var(--gold2)}
+.sec-head h2 small{color:var(--muted);font-size:.75rem;letter-spacing:0;margin-left:8px;text-transform:none}
+.arrows{display:flex;gap:6px}
+.arrows button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--bg2);color:var(--gold2);
+  cursor:pointer;font-size:1rem}
+.arrows button:hover{border-color:var(--gold)}
+.ribbon{display:flex;gap:14px;overflow-x:auto;padding:8px 22px 18px;scroll-snap-type:x proximity;
+  scrollbar-width:none;cursor:grab;-webkit-overflow-scrolling:touch}
+.ribbon::-webkit-scrollbar{display:none}
+.ribbon.drag{cursor:grabbing;scroll-snap-type:none}
+.card{flex:0 0 150px;scroll-snap-align:start;text-decoration:none;color:inherit;
+  background:linear-gradient(160deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 12px 14px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;
+  transition:transform .2s,border-color .2s,box-shadow .2s;user-select:none;-webkit-user-drag:none}
+.card:hover,.card:focus-visible{transform:translateY(-4px);border-color:var(--gold);box-shadow:0 10px 26px rgba(0,0,0,.45);outline:none}
+.card .ico{width:68px;height:68px;border-radius:50%;display:grid;place-items:center;font-size:2rem;
+  background:radial-gradient(circle at 35% 30%,#3a2e1d,#17120b);border:2px solid var(--gold);
+  box-shadow:inset 0 0 12px rgba(0,0,0,.6),0 0 0 4px rgba(212,169,90,.08)}
+.card .name{font-size:.98rem;line-height:1.2}
+.card .sub{font-size:.72rem;color:var(--muted);margin-top:-4px}
+.empty{display:none;text-align:center;color:var(--muted);padding:40px;font-style:italic}
+footer{text-align:center;color:var(--muted);font-size:.8rem;padding:0 22px 30px}
+body.grid .ribbon{flex-wrap:wrap;overflow:visible;cursor:default}
+body.grid .arrows{display:none}
+@media (max-width:600px){.card{flex-basis:132px}.arrows{display:none}}
+@media (hover:none){.arrows{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Andròmines</h1>
+  <p>Orlojs, cronògrafs, pèndols i molt més</p>
+</header>
+
+<div class="tools">
+  <input id="q" type="search" placeholder="Cerca una andròmina…" aria-label="Cerca">
+  <button id="view" type="button">▦ Vista graella</button>
+</div>
+
+<main id="app"></main>
+<div class="empty" id="empty">No s'ha trobat cap resultat.</div>
+<footer>Toca o clica una icona per obrir-lo · arrossega les cintes per veure'n més</footer>
+
+<script>
+/* ============================================================
+   EDITA AQUÍ: afegeix, treu o canvia projectes i categories.
+   Cada projecte: { n:"Nom", s:"subtítol (opcional)", i:"símbol", u:"enllaç" }
+   ============================================================ */
+const BASE = "https://xavimuniesa.github.io/";
+const GROUPS = [
+  { t:"Orlojs astronòmics", items:[
+    { n:"Orloj", s:"mòbil · medieval", i:"🌌", u:BASE+"AstroxI/" },
+    { n:"Orloj", s:"mòbil", i:"🔭", u:BASE+"Orly/" },
+    { n:"Orloj", s:"escriptori · medieval", i:"🪐", u:BASE+"orlojescr/" },
+    { n:"Orloj", s:"escriptori", i:"🌠", u:BASE+"orloj/" },
+  ]},
+  { t:"Rellotges de polsera", items:[
+    { n:"Mondaine", i:"🕰️", u:BASE+"RellotgeSuis/" },
+    { n:"Mondaine 2", i:"⏱️", u:BASE+"mondgem/" },
+    { n:"Tissot", i:"⌚", u:BASE+"MondTfosc/" },
+    { n:"Vostok", i:"🧭", u:BASE+"MondTclar/" },
+    { n:"Omega", s:"tauleta", i:"Ω", u:BASE+"megatablet/" },
+    { n:"Temps lunar 1", s:"mòbil", i:"🌙", u:BASE+"dbi/" },
+    { n:"Temps lunar 2", s:"mòbil", i:"🌖", u:BASE+"kontrolI/" },
+    { n:"Al Capone", i:"🎩", u:BASE+"republica/" },
+    { n:"Kasiol", i:"🔢", u:BASE+"kasio/" },
+    { n:"Long / GlsaH", i:"⚓", u:BASE+"malvin/" },
+  ]},
+  { t:"Pèndols i cucuts", items:[
+    { n:"Pèndol", i:"🐟", u:BASE+"peixos/" },
+    { n:"Cucuts", i:"🐦", u:BASE+"cucut/" },
+    { n:"Laura", i:"🎨", u:BASE+"laura/" },
+  ]},
+  { t:"Temps i món", items:[
+    { n:"El Temps", i:"⛅", u:BASE+"clima/" },
+    { n:"Londres · Zúric", i:"🌍", u:BASE+"zuic/" },
+  ]},
+];
+
+/* ---------- Codi (no cal tocar-lo) ---------- */
+const app = document.getElementById('app');
+const esc = s => String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+
+function render(filter=''){
+  const f = norm(filter.trim());
+  let html='', total=0;
+  GROUPS.forEach((g,gi)=>{
+    const items = g.items.filter(x=>!f || norm(x.n+' '+(x.s||'')+' '+g.t).includes(f));
+    if(!items.length) return;
+    total += items.length;
+    html += `<section>
+      <div class="sec-head"><h2>${esc(g.t)}<small>${items.length}</small></h2>
+      <div class="arrows"><button data-dir="-1" aria-label="Enrere">‹</button><button data-dir="1" aria-label="Endavant">›</button></div></div>
+      <div class="ribbon">${items.map(x=>`
+        <a class="card" href="${esc(x.u)}" target="_blank" rel="noopener" draggable="false">
+          <div class="ico" aria-hidden="true">${esc(x.i)}</div>
+          <div class="name">${esc(x.n)}</div>
+          ${x.s?`<div class="sub">${esc(x.s)}</div>`:''}
+        </a>`).join('')}</div></section>`;
+  });
+  app.innerHTML = html;
+  document.getElementById('empty').style.display = total?'none':'block';
+  bind();
+}
+
+function bind(){
+  document.querySelectorAll('section').forEach(sec=>{
+    const r = sec.querySelector('.ribbon');
+    sec.querySelectorAll('.arrows button').forEach(b=>b.onclick=()=>
+      r.scrollBy({left:+b.dataset.dir*r.clientWidth*.8,behavior:'smooth'}));
+    let down=false,sx=0,sl=0,moved=false;
+    r.addEventListener('pointerdown',e=>{
+      if(e.pointerType!=='mouse') return;
+      down=true;moved=false;sx=e.clientX;sl=r.scrollLeft;
+    });
+    window.addEventListener('pointermove',e=>{
+      if(!down) return;
+      const dx=e.clientX-sx;
+      if(Math.abs(dx)>5){moved=true;r.classList.add('drag');}
+      if(moved) r.scrollLeft=sl-dx;
+    });
+    window.addEventListener('pointerup',()=>{down=false;r.classList.remove('drag');});
+    r.addEventListener('click',e=>{ if(moved){e.preventDefault();e.stopPropagation();moved=false;} },true);
+  });
+}
+
+document.getElementById('q').addEventListener('input',e=>render(e.target.value));
+const vb=document.getElementById('view');
+vb.onclick=()=>{
+  const g=document.body.classList.toggle('grid');
+  vb.textContent=g?'↔ Vista cintes':'▦ Vista graella';
+};
+render();
+</script>
+</body>
+</html>
