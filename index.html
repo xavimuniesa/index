@@ -55,8 +55,6 @@ section{margin-top:26px}
 .card .sub{font-size:.72rem;color:var(--muted);margin-top:-4px}
 .empty{display:none;text-align:center;color:var(--muted);padding:40px;font-style:italic}
 footer{text-align:center;color:var(--muted);font-size:.8rem;padding:0 22px 30px}
-body.grid .ribbon{flex-wrap:wrap;overflow:visible;cursor:default}
-body.grid .arrows{display:none}
 @media (max-width:600px){.card{flex-basis:132px}.arrows{display:none}}
 @media (hover:none){.arrows{display:none}}
 </style>
@@ -69,7 +67,6 @@ body.grid .arrows{display:none}
 
 <div class="tools">
   <input id="q" type="search" placeholder="Cerca una andròmina…" aria-label="Cerca">
-  <button id="view" type="button">▦ Vista graella</button>
 </div>
 
 <main id="app"></main>
@@ -85,7 +82,7 @@ const BASE = "https://xavimuniesa.github.io/";
 const GROUPS = [
   { t:"Orlojs astronòmics", items:[
     { n:"Orloj", s:"mòbil · medieval", i:"🌌", u:BASE+"AstroxI/" },
-    { n:"Orloj", s:"mòbil", i:"🔭", u:BASE+"Orly/" },
+    { n:"Orloj", s:"mòbil", i:"🔭", u:BASE+"orly/" },
     { n:"Orloj", s:"escriptori · medieval", i:"🪐", u:BASE+"orlojescr/" },
     { n:"Orloj", s:"escriptori", i:"🌠", u:BASE+"orloj/" },
   ]},
@@ -95,10 +92,8 @@ const GROUPS = [
     { n:"Tissot", i:"⌚", u:BASE+"MondTfosc/" },
     { n:"Vostok", i:"🧭", u:BASE+"MondTclar/" },
     { n:"Omega", s:"tauleta", i:"Ω", u:BASE+"megatablet/" },
-    { n:"Temps lunar 1", s:"mòbil", i:"🌙", u:BASE+"dbi/" },
-    { n:"Temps lunar 2", s:"mòbil", i:"🌖", u:BASE+"kontrolI/" },
     { n:"Al Capone", i:"🎩", u:BASE+"republica/" },
-    { n:"Kasiol", i:"🔢", u:BASE+"kasio/" },
+    { n:"Kasio", i:"🔢", u:BASE+"kasio/" },
     { n:"Long / GlsaH", i:"⚓", u:BASE+"malvin/" },
   ]},
   { t:"Pèndols i cucuts", items:[
@@ -109,6 +104,9 @@ const GROUPS = [
   { t:"Temps i món", items:[
     { n:"El Temps", i:"⛅", u:BASE+"clima/" },
     { n:"Londres · Zúric", i:"🌍", u:BASE+"zuic/" },
+    { n:"Dashboard", i:"📊", u:BASE+"dbi/" },
+    { n:"Tauler lunar 1", i:"🌙", u:BASE+"kontrolI/" },
+    { n:"Tauler lunar 2", i:"🌖", u:BASE+"kontrolI/" },
   ]},
 ];
 
@@ -161,11 +159,6 @@ function bind(){
 }
 
 document.getElementById('q').addEventListener('input',e=>render(e.target.value));
-const vb=document.getElementById('view');
-vb.onclick=()=>{
-  const g=document.body.classList.toggle('grid');
-  vb.textContent=g?'↔ Vista cintes':'▦ Vista graella';
-};
 render();
 </script>
 </body>
